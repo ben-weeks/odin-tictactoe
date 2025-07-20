@@ -63,16 +63,6 @@ const gameBoard = (function() {
     return { resetBoard, printBoard, getBoardCell, setBoardCell, checkWin, checkTie }
 })()
 
-// function gamePlayer(type) {
-//     let turn = false // private variable representing turn
-
-//     getType = () => { return type }
-//     setTurn = () => { turn = isTurn }
-//     getTurn = () => { return turn }
-
-//     return { getType, getTurn, setTurn }
-// }
-
 // gameManager as IIFE
 const gameManager = (function(board) {
     let currentTurn = CELL.X // 0 = X's turn; 1 = O's turn (-1 is empty)
@@ -112,3 +102,23 @@ const gameManager = (function(board) {
 // gameManager.takeTurn(2, 0) // x
 // gameManager.takeTurn(2, 2) // o
 // gameManager.takeTurn(2, 1) // x
+
+const displayManager = (function() {
+    const gameBoardElement = document.querySelector(".game-board")
+    const gameCells = Array.from({ length: 3 }, () => new Array(3)); 
+
+    const displayInit = () => {
+        // add cells
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+                gameCells[row][col] = document.createElement("button")
+                gameCells[row][col].classList.add("game-cell")
+                gameBoardElement.appendChild(gameCells[row][col])
+            }
+        }
+    }
+
+    return { displayInit }
+})()
+
+displayManager.displayInit()

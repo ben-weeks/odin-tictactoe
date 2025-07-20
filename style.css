@@ -1,7 +1,68 @@
 *, :root {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    
+    font-size: 16px;
+
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+}
+
+.content {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding: 2rem;
+    height: 100vh;
+}
+
+.header-title {
+    font-size: 36px;
+}
+
+.game-area {
+    display: grid;
+    grid-template: 1fr 3fr 1fr / repeat(6, 1fr);
+    
+    padding: 2rem;
+    gap: 2rem;
+
+    aspect-ratio: 1 / 1;
+    width: max(600px, 30vw);
+
+    background-color: #eee;
+}
+
+.game-names {
+    grid-column: 1 / -1;
+    background-color: #ddd;
+}
+
+.game-score {
+    grid-row: 2 / -2;
+    grid-column: 1 / 3;
+    background-color: #ddd;
+}
+
+.game-board {
+    grid-column: 3 / -1;
+    grid-row: 2 / 3;
+
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+
+    padding: 1rem;
+    gap: 1rem;
+
+    background-color: #ddd;
+}
+
+.game-options {
+    background-color: #ddd;
+    grid-column: 1 / -1;
+}
+
+.game-cell {
+    background-color: #aaa;
 }
