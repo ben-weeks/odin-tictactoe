@@ -80,32 +80,28 @@ const gameManager = (function(board) {
         }
         
         let winner = board.checkWin(currentTurn) // check for a win
-        if (winner) { console.log(`player ${currentTurn} wins!`); return }
-        let tie = board.checkTie()
-        if (tie) { console.log(`it's a tie!`); return }
+        let tie = board.checkTie() // check for a tie
+
+        // return 0 or 1 on win (whoever won), and -1 if tie
+        if (winner) return currentTurn
+        if (tie) return -1
 
         if (currentTurn === CELL.X) currentTurn = CELL.O 
         else currentTurn = CELL.X
     }
 
-    return { newGame, takeTurn }
+    // turn getter for display manager
+    const getTurn = () => { return currentTurn }
+
+    return { newGame, takeTurn, getTurn }
 })(gameBoard)
 
-// mock game
-// gameManager.newGame()
-// gameManager.takeTurn(0, 0) // x
-// gameManager.takeTurn(0, 1) // o
-// gameManager.takeTurn(1, 1) // x
-// gameManager.takeTurn(0, 2) // o
-// gameManager.takeTurn(1, 2) // x
-// gameManager.takeTurn(1, 0) // o
-// gameManager.takeTurn(2, 0) // x
-// gameManager.takeTurn(2, 2) // o
-// gameManager.takeTurn(2, 1) // x
-
-const displayManager = (function() {
+const displayManager = (function(game) {
     const gameBoardElement = document.querySelector(".game-board")
     const gameCells = Array.from({ length: 3 }, () => new Array(3)); 
+
+    const playerXName = document.querySelector("#player-x-name-input")
+    const playerOName = document.querySelector("#player-o-name-input")
 
     const displayInit = () => {
         // add cells
@@ -114,11 +110,39 @@ const displayManager = (function() {
                 gameCells[row][col] = document.createElement("button")
                 gameCells[row][col].classList.add("game-cell")
                 gameBoardElement.appendChild(gameCells[row][col])
+
+                // add the event listener right in the loop? sure
+                gameCells[row][col].addEventListener("click", () => {
+                    displayTurn(gameCells[row][col], row, col, game.getTurn())
+                })
+            }
+        }
+
+        // start a new game
+        game.newGame()
+    }
+
+    // this is probably bad and inconsistent syntax but I don't want to write all this logic
+    // in the displayInit loop
+    function displayTurn(btn, row, col, turn) {
+        btn.textContent = (turn === 0) ? "❎" : "🅾️"
+        btn.disabled = true 
+        let gameResult = game.takeTurn(row, col) // will return 0 or 1 if there is a winner or tie
+        console.log(gameResult)
+
+        // check game result
+        if (gameResult !== undefined) {
+            if (gameResult === 0) {
+                alert("X wins!")
+            } else if (gameResult === 1) {
+                alert("O wins!")
+            } else {
+                alert("Tie!")
             }
         }
     }
 
     return { displayInit }
-})()
+})(gameManager)
 
-displayManager.displayInit()
+window.onload = function() { displayManager.displayInit() }

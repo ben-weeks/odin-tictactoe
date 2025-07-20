@@ -9,14 +9,37 @@
 </head>
 <body>
     <div class="content">
+        <!-- <dialog class="get-player-names">
+            <h1>Please enter player names</h1>
+            <form action="" class="get-player-names-form" method="dialog">
+                <label for="player-x">Player X</label>
+                <input type="text" name="player-x" id="player-x">
+                <label for="player-o">Player O</label>
+                <input type="text" name="player-o" id="player-o">
+                <button type="submit" class="submit-player-names">Play!</button>
+            </form>
+        </dialog> -->
         <div class="header">
             <h1 class="header-title">TOP Tic-Tac-Toe</h1>
         </div>
         <div class="game-area">
-            <div class="game-names"></div>
-            <div class="game-score"></div>
+            <div class="game-options">
+                <div class="player-names">
+                    <div class="player-input">
+                        <label for="player-x-name">Player X Name</label>
+                        <input type="text" name="player-x-name" id="player-x-name-input" maxlength="10" placeholder="X">
+                    </div>
+                    <div class="player-input">
+                        <label for="player-o-name">Player O Name</label>
+                        <input type="text" name="player-o-name" id="player-o-name-input" maxlength="10" placeholder="O">
+                    </div>
+                </div>
+                <div class="game-scores"></div>
+                <div class="game-turn">Turn: <p class="player-turn"></p></div>
+                <button class="game-reset">Reset Game</button>
+                <button class="score-reset">Reset Score</button>
+            </div>
             <div class="game-board"></div>
-            <div class="game-options"></div>
         </div>
         <div class="footer">
             <p>Made by Ben Weeks 2025</p>
