@@ -98,10 +98,22 @@ const gameManager = (function(board) {
 
 const displayManager = (function(game) {
     const gameBoardElement = document.querySelector(".game-board")
-    const gameCells = Array.from({ length: 3 }, () => new Array(3)); 
+    const gameCells = Array.from({ length: 3 }, () => new Array(3))
+    const playerTurn = document.querySelector(".player-turn") 
+    const gameResetButton = document.querySelector(".game-reset")
 
-    const playerXName = document.querySelector("#player-x-name-input")
-    const playerOName = document.querySelector("#player-o-name-input")
+    const playerXNameInput = document.querySelector("#player-x-name-input")
+    const playerONameInput = document.querySelector("#player-o-name-input")
+
+    // I don't like having these global scoped within the displayManager but I'm too lazy to come up with an alternate solution
+    playerXNameInput.addEventListener("change", (e) => { e.preventDefault(); playerXName = playerXNameInput.value })
+    playerONameInput.addEventListener("change", (e) => { e.preventDefault(); playerOName = playerONameInput.value })
+    
+    gameResetButton.addEventListener("click", (e) => { e.preventDefault(); game.newGame(); displayReset() })
+
+    // defaults
+    let playerXName = playerXNameInput.value || "X"
+    let playerOName = playerONameInput.value || "O"
 
     const displayInit = () => {
         // add cells
@@ -120,6 +132,16 @@ const displayManager = (function(game) {
 
         // start a new game
         game.newGame()
+        playerTurn.textContent = ` ${playerXName}`
+    }
+
+    function displayReset() {
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+                gameCells[row][col].textContent = ""
+                gameCells[row][col].disabled = false
+            }
+        }
     }
 
     // this is probably bad and inconsistent syntax but I don't want to write all this logic
@@ -127,15 +149,16 @@ const displayManager = (function(game) {
     function displayTurn(btn, row, col, turn) {
         btn.textContent = (turn === 0) ? "❎" : "🅾️"
         btn.disabled = true 
+        playerTurn.textContent = (turn === 0) ? ` ${playerOName}` : ` ${playerXName}`
         let gameResult = game.takeTurn(row, col) // will return 0 or 1 if there is a winner or tie
         console.log(gameResult)
 
         // check game result
         if (gameResult !== undefined) {
             if (gameResult === 0) {
-                alert("X wins!")
+                alert(`${playerXName} wins!`)
             } else if (gameResult === 1) {
-                alert("O wins!")
+                alert(`${playerOName} wins!`)
             } else {
                 alert("Tie!")
             }
