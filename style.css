@@ -46,11 +46,11 @@
     aspect-ratio: 3 / 2;
     width: max(600px, 50vw);
 
-    background-color: #eee;
+    /* background-color: #eee; */
 }
 
 .game-options {
-    background-color: #ddd;
+    /* background-color: #ddd; */
 
     display: flex;
     flex-flow: column wrap;
@@ -84,12 +84,19 @@
     padding: 1rem;
     gap: 1rem;
 
-    background-color: #ddd;
+    /* background-color: #ddd; */
 }
 
 .game-cell {
     background-color: #aaa;
+    border-radius: 8px;
     border: none;
+
+    transition: 0.1s;
+}
+
+.game-cell:hover {
+    background-color: #999;
 }
 
 .game-score-heading {
@@ -101,4 +108,14 @@
     color: #000;
     font-size: 64px;
     background-color: #777;
+}
+
+.option-buttons {
+    margin-top: 1rem;
+}
+
+.option-buttons button {
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
 }

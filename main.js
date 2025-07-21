@@ -160,6 +160,7 @@ const displayManager = (function(game) {
                 gameCells[row][col].disabled = false
             }
         }
+        playerTurn.textContent = ` ${playerXName}`
         displayScore()
     }
 
@@ -176,11 +177,12 @@ const displayManager = (function(game) {
 
     // this is probably bad and inconsistent syntax but I don't want to write all this logic
     // in the displayInit loop
-    function displayTurn(btn, row, col, turn) {
+    async function displayTurn(btn, row, col, turn) {
         btn.textContent = (turn === CELL.X) ? "❎" : "🅾️"
         btn.disabled = true 
         playerTurn.textContent = (turn === 0) ? ` ${playerOName}` : ` ${playerXName}`
         let gameResult = game.takeTurn(row, col) // will return 0 or 1 if there is a winner or tie
+        await new Promise(r => setTimeout(r, 100));
 
         // check game result
         if (gameResult !== undefined) {
