@@ -66,6 +66,8 @@ const gameBoard = (function() {
 // gameManager as IIFE
 const gameManager = (function(board) {
     let currentTurn = CELL.X // 0 = X's turn; 1 = O's turn (-1 is empty)
+    let Xscore = 0
+    let Oscore = 0
 
     const newGame = () => {
         currentTurn = CELL.X // set to X's turn
@@ -83,7 +85,7 @@ const gameManager = (function(board) {
         let tie = board.checkTie() // check for a tie
 
         // return 0 or 1 on win (whoever won), and -1 if tie
-        if (winner) return currentTurn
+        if (winner) return currentTurn 
         if (tie) return -1
 
         if (currentTurn === CELL.X) currentTurn = CELL.O 
@@ -92,8 +94,13 @@ const gameManager = (function(board) {
 
     // turn getter for display manager
     const getTurn = () => { return currentTurn }
+    const getXScore = () => { return Xscore }
+    const getOScore = () => { return Oscore }
+    const updateXScore = () => { Xscore++ }
+    const updateOScore = () => { Oscore++ }
+    const resetScores = () => { Xscore = 0; Oscore = 0 }
 
-    return { newGame, takeTurn, getTurn }
+    return { newGame, takeTurn, getTurn, getXScore, getOScore, updateXScore, updateOScore, resetScores }
 })(gameBoard)
 
 const displayManager = (function(game) {
@@ -101,15 +108,25 @@ const displayManager = (function(game) {
     const gameCells = Array.from({ length: 3 }, () => new Array(3))
     const playerTurn = document.querySelector(".player-turn") 
     const gameResetButton = document.querySelector(".game-reset")
+    const scoreResetButton = document.querySelector(".score-reset")
 
     const playerXNameInput = document.querySelector("#player-x-name-input")
     const playerONameInput = document.querySelector("#player-o-name-input")
 
+    const playerXScore = document.querySelector(".player-x-score")
+    const playerOScore = document.querySelector(".player-o-score")
+
     // I don't like having these global scoped within the displayManager but I'm too lazy to come up with an alternate solution
-    playerXNameInput.addEventListener("change", (e) => { e.preventDefault(); playerXName = playerXNameInput.value })
-    playerONameInput.addEventListener("change", (e) => { e.preventDefault(); playerOName = playerONameInput.value })
+    playerXNameInput.addEventListener("change", (e) => { e.preventDefault(); playerXName = playerXNameInput.value; displayScore() })
+    playerONameInput.addEventListener("change", (e) => { e.preventDefault(); playerOName = playerONameInput.value; displayScore() })
     
     gameResetButton.addEventListener("click", (e) => { e.preventDefault(); game.newGame(); displayReset() })
+    scoreResetButton.addEventListener("click", (e) => { 
+        e.preventDefault()
+        game.resetScores()
+        game.newGame() 
+        displayReset() 
+    })
 
     // defaults
     let playerXName = playerXNameInput.value || "X"
@@ -132,6 +149,7 @@ const displayManager = (function(game) {
 
         // start a new game
         game.newGame()
+        displayScore()
         playerTurn.textContent = ` ${playerXName}`
     }
 
@@ -142,26 +160,41 @@ const displayManager = (function(game) {
                 gameCells[row][col].disabled = false
             }
         }
+        displayScore()
+    }
+
+    function displayScore() {
+        playerXScore.textContent = `${playerXName}: ${game.getXScore()}`
+        playerOScore.textContent = `${playerOName}: ${game.getOScore()}`
+    }
+
+    function updateScore(player) {
+        if (player === CELL.X) game.updateXScore()
+        else game.updateOScore()
+        displayScore()
     }
 
     // this is probably bad and inconsistent syntax but I don't want to write all this logic
     // in the displayInit loop
     function displayTurn(btn, row, col, turn) {
-        btn.textContent = (turn === 0) ? "❎" : "🅾️"
+        btn.textContent = (turn === CELL.X) ? "❎" : "🅾️"
         btn.disabled = true 
         playerTurn.textContent = (turn === 0) ? ` ${playerOName}` : ` ${playerXName}`
         let gameResult = game.takeTurn(row, col) // will return 0 or 1 if there is a winner or tie
-        console.log(gameResult)
 
         // check game result
         if (gameResult !== undefined) {
-            if (gameResult === 0) {
+            if (gameResult === CELL.X) {
                 alert(`${playerXName} wins!`)
-            } else if (gameResult === 1) {
+                updateScore(turn) // I hate this solution but it works
+            } else if (gameResult === CELL.O) {
                 alert(`${playerOName} wins!`)
+                updateScore(turn)
             } else {
                 alert("Tie!")
             }
+            game.newGame()
+            displayReset()
         }
     }
 
